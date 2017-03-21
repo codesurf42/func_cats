@@ -65,7 +65,7 @@ object handleDownload {
     file <- ds.downloadS3("foo")
     option <- ds.hasConfigValueasOption.toEitherTF("no config value")
     option2 <- EitherT.fromOption[Future](ds.hasConfigValueasOption, DefaultError("not found"))
-    fut1 <- ds.someFuture.toEitherTF("")
+    fut1 <- ds.someFuture.toEitherTF("here could be func => error msg")
   } yield s"file=${file.data} with opt=$option, opt2=$option2 fut1: $fut1"
 
   computationOk.map { v =>
