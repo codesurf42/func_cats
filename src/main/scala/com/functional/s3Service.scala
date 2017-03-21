@@ -63,8 +63,11 @@ object handleDownload {
   val ds = new s3Service
   val computationOk = for {
     file <- ds.downloadS3("foo")
+    // lift option to ETF
     option <- ds.hasConfigValueasOption.toEitherTF("no config value")
+    // lift option, just with standard EitherT helper
     option2 <- EitherT.fromOption[Future](ds.hasConfigValueasOption, DefaultError("not found"))
+    // lift future to ETF
     fut1 <- ds.someFuture.toEitherTF("here could be func => error msg")
   } yield s"file=${file.data} with opt=$option, opt2=$option2 fut1: $fut1"
 
