@@ -52,20 +52,21 @@ class s3Service {
     ETF.right(File("file1"))
   }
 
-  def hasConfigValue: Option[String] = Some("opt1")
+  def hasConfigValueasOption: Option[String] = Some("opt1")
 
   def someFuture: Future[String] = Future.successful("fut1")
 }
 
 object handleDownload {
   import com.functional.ETF._
-  
+
   val ds = new s3Service
   val computationOk = for {
     file <- ds.downloadS3("foo")
-    option <- ds.hasConfigValue.toEitherTF("no config value")
+    option <- ds.hasConfigValueasOption.toEitherTF("no config value")
+    option2 <- EitherT.fromOption[Future](ds.hasConfigValueasOption, DefaultError("not found"))
     fut1 <- ds.someFuture.toEitherTF("")
-  } yield s"file=${file.data} with opt=$option, fut1: $fut1"
+  } yield s"file=${file.data} with opt=$option, opt2=$option2 fut1: $fut1"
 
   computationOk.map { v =>
     println(v)
